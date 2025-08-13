@@ -2176,6 +2176,167 @@ function App() {
       </div>
     </div>
   );
+  };
+
+  const ResetPasswordPage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
+      <Header />
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4">
+        <Card className="w-full max-w-md p-8">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-gray-900">
+              Nouveau mot de passe
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <div>
+                <Label htmlFor="new-password">Nouveau mot de passe</Label>
+                <Input
+                  id="new-password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  placeholder="Votre nouveau mot de passe"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600"
+              >
+                Réinitialiser le mot de passe
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
+  const ContactPage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
+      <Header />
+      <div className="max-w-4xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            Contactez-nous
+          </h2>
+          <p className="text-xl text-gray-600">
+            Une question ? Une suggestion ? N'hésitez pas à nous écrire !
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-12">
+          <Card className="p-8">
+            <CardHeader>
+              <CardTitle className="text-2xl text-gray-900">
+                Envoyez-nous un message
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="contact-name">Nom</Label>
+                    <Input
+                      id="contact-name"
+                      placeholder="Votre nom"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact-email">Email</Label>
+                    <Input
+                      id="contact-email"
+                      type="email"
+                      placeholder="votre@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="contact-subject">Sujet</Label>
+                  <Input
+                    id="contact-subject"
+                    placeholder="Sujet de votre message"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="contact-message">Message</Label>
+                  <textarea
+                    id="contact-message"
+                    className="w-full p-3 border border-gray-300 rounded-md resize-none"
+                    rows="6"
+                    placeholder="Votre message..."
+                    required
+                  />
+                </div>
+                
+                <Button 
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600"
+                >
+                  Envoyer le message
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-8">
+            <Card className="p-6">
+              <CardContent className="flex items-center space-x-4">
+                <div className="bg-gradient-to-r from-rose-500 to-orange-500 p-3 rounded-full">
+                  <BookOpen className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Email</h3>
+                  <p className="text-gray-600">contact@ecoledesgenies.fr</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6">
+              <CardContent className="flex items-center space-x-4">
+                <div className="bg-gradient-to-r from-orange-500 to-rose-500 p-3 rounded-full">
+                  <Clock className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Horaires</h3>
+                  <p className="text-gray-600">Lun-Ven: 9h-18h</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6">
+              <CardContent>
+                <h3 className="font-semibold text-gray-900 mb-4">
+                  Suivez-nous
+                </h3>
+                <div className="flex space-x-4">
+                  <Button variant="outline" size="sm">
+                    Facebook
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Instagram
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    LinkedIn
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="App">
