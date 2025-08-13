@@ -1019,6 +1019,541 @@ function App() {
     </div>
   );
 
+  const PremiumPage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+            <Crown className="h-10 w-10 text-white" />
+          </div>
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            Devenez membre <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500">Premium</span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Accédez à toutes nos ressources exclusives et accompagnez votre enfant vers la réussite scolaire
+          </p>
+        </div>
+
+        {/* Comparison Section */}
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
+          {/* Free Plan */}
+          <Card className="p-8 border-2 border-gray-200">
+            <CardHeader className="text-center pb-6">
+              <CardTitle className="text-2xl text-gray-900">Gratuit</CardTitle>
+              <div className="text-3xl font-bold text-gray-600 mt-4">0€</div>
+              <p className="text-gray-600">par mois</p>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-4">
+                <li className="flex items-center text-gray-700">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                  Accès aux fiches gratuites
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                  Téléchargement PDF
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                  Support par email
+                </li>
+                <li className="flex items-center text-gray-400">
+                  <X className="h-5 w-5 text-gray-300 mr-3" />
+                  Fiches premium exclusives
+                </li>
+                <li className="flex items-center text-gray-400">
+                  <X className="h-5 w-5 text-gray-300 mr-3" />
+                  Nouveautés en avant-première
+                </li>
+                <li className="flex items-center text-gray-400">
+                  <X className="h-5 w-5 text-gray-300 mr-3" />
+                  Conseils personnalisés
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* Premium Plan */}
+          <Card className="p-8 border-2 border-yellow-400 bg-gradient-to-br from-yellow-50 to-orange-50 relative overflow-hidden">
+            <div className="absolute top-4 right-4">
+              <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+                Recommandé
+              </Badge>
+            </div>
+            <CardHeader className="text-center pb-6">
+              <CardTitle className="text-2xl text-gray-900">Premium</CardTitle>
+              <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500 mt-4">
+                9,99€
+              </div>
+              <p className="text-gray-600">par mois</p>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-center text-gray-700">
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                  <strong>Tout du plan gratuit</strong>
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <Star className="h-5 w-5 text-yellow-500 mr-3" />
+                  Accès à toutes les fiches premium
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <Zap className="h-5 w-5 text-orange-500 mr-3" />
+                  Nouveautés en avant-première
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <BookOpen className="h-5 w-5 text-blue-500 mr-3" />
+                  Ebooks exclusifs de guidance parentale
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <Heart className="h-5 w-5 text-rose-500 mr-3" />
+                  Conseils personnalisés de Marine
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <Shield className="h-5 w-5 text-indigo-500 mr-3" />
+                  Support prioritaire
+                </li>
+              </ul>
+              
+              {user && !user.is_premium && (
+                <Button 
+                  onClick={handleSubscription}
+                  className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white text-lg py-6"
+                >
+                  <Crown className="mr-2 h-5 w-5" />
+                  Devenir Premium
+                </Button>
+              )}
+              
+              {user && user.is_premium && (
+                <div className="text-center">
+                  <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-lg px-6 py-3">
+                    <Crown className="mr-2 h-5 w-5" />
+                    Vous êtes Premium !
+                  </Badge>
+                </div>
+              )}
+              
+              {!user && (
+                <Button 
+                  onClick={() => setCurrentView('auth')}
+                  className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white text-lg py-6"
+                >
+                  Commencer mon essai gratuit
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-rose-100 mb-16">
+          <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            Pourquoi choisir Premium ?
+          </h3>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="bg-gradient-to-r from-rose-500 to-orange-500 p-4 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                <BookOpen className="h-8 w-8 text-white" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-4">
+                Contenu Exclusif
+              </h4>
+              <p className="text-gray-600">
+                Fiches pédagogiques premium créées spécialement par Marine Alves, 
+                non disponibles ailleurs.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-gradient-to-r from-orange-500 to-rose-500 p-4 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                <Zap className="h-8 w-8 text-white" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-4">
+                Mises à jour régulières
+              </h4>
+              <p className="text-gray-600">
+                Nouvelles ressources ajoutées chaque semaine, 
+                toujours en phase avec les programmes scolaires.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-gradient-to-r from-rose-500 to-orange-500 p-4 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                <Heart className="h-8 w-8 text-white" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-4">
+                Accompagnement Personnalisé
+              </h4>
+              <p className="text-gray-600">
+                Conseils et guidance directement de Marine Alves 
+                pour accompagner votre enfant.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonials */}
+        <div className="text-center mb-16">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">
+            Ce que disent nos membres Premium
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="p-6">
+              <CardContent>
+                <p className="text-gray-600 italic mb-4">
+                  "Les fiches premium ont transformé nos révisions à la maison. 
+                  Ma fille de CE1 adore les exercices et progresse rapidement !"
+                </p>
+                <div className="flex items-center">
+                  <div className="bg-rose-100 rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                    <span className="text-rose-600 font-semibold">S</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Sarah M.</p>
+                    <p className="text-sm text-gray-600">Maman de Léa, CE1</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="p-6">
+              <CardContent>
+                <p className="text-gray-600 italic mb-4">
+                  "L'approche bienveillante de Marine se ressent dans chaque fiche. 
+                  Mon fils reprend confiance en lui grâce à ces exercices."
+                </p>
+                <div className="flex items-center">
+                  <div className="bg-orange-100 rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                    <span className="text-orange-600 font-semibold">T</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Thomas D.</p>
+                    <p className="text-sm text-gray-600">Papa de Lucas, CM2</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-12 text-center text-white">
+          <h3 className="text-3xl font-bold mb-4">
+            Prêt à transformer l'apprentissage de votre enfant ?
+          </h3>
+          <p className="text-xl text-yellow-100 mb-8">
+            Rejoignez plus de 1000 familles qui font confiance à L'École des Génies
+          </p>
+          
+          {!user && (
+            <Button 
+              onClick={() => setCurrentView('auth')}
+              size="lg"
+              className="bg-white text-orange-600 hover:bg-gray-50 px-8 py-6 text-lg font-semibold"
+            >
+              Commencer gratuitement
+            </Button>
+          )}
+          
+          {user && !user.is_premium && (
+            <Button 
+              onClick={handleSubscription}
+              size="lg"
+              className="bg-white text-orange-600 hover:bg-gray-50 px-8 py-6 text-lg font-semibold"
+            >
+              <Crown className="mr-2 h-5 w-5" />
+              Passer Premium maintenant
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const AdminPage = () => {
+    useEffect(() => {
+      if (user && user.is_admin) {
+        fetchAdminStats();
+        fetchAdminSheets();
+      }
+    }, [user]);
+
+    if (!user || !user.is_admin) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
+          <Header />
+          <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+            <Card className="p-12 text-center">
+              <Shield className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Accès Admin Requis</h2>
+              <p className="text-gray-600">Vous devez être administrateur pour accéder à cette page.</p>
+            </Card>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Espace Administrateur
+            </h2>
+            <p className="text-gray-600">
+              Gérez le contenu et consultez les statistiques de la plateforme
+            </p>
+          </div>
+
+          {/* Stats Dashboard */}
+          {adminStats && (
+            <div className="grid md:grid-cols-4 gap-6 mb-8">
+              <Card className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Utilisateurs totaux</p>
+                    <p className="text-2xl font-bold text-gray-900">{adminStats.users.total}</p>
+                  </div>
+                  <Users className="h-8 w-8 text-blue-500" />
+                </div>
+              </Card>
+              
+              <Card className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Membres Premium</p>
+                    <p className="text-2xl font-bold text-yellow-600">{adminStats.users.premium}</p>
+                  </div>
+                  <Crown className="h-8 w-8 text-yellow-500" />
+                </div>
+              </Card>
+              
+              <Card className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Fiches totales</p>
+                    <p className="text-2xl font-bold text-green-600">{adminStats.sheets.total}</p>
+                  </div>
+                  <BookOpen className="h-8 w-8 text-green-500" />
+                </div>
+              </Card>
+              
+              <Card className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Professeurs vérifiés</p>
+                    <p className="text-2xl font-bold text-purple-600">{adminStats.users.verified_teachers}</p>
+                  </div>
+                  <GraduationCap className="h-8 w-8 text-purple-500" />
+                </div>
+              </Card>
+            </div>
+          )}
+
+          <Tabs defaultValue="create" className="space-y-6">
+            <TabsList className="bg-white">
+              <TabsTrigger value="create">Créer une fiche</TabsTrigger>
+              <TabsTrigger value="manage">Gérer les fiches</TabsTrigger>
+            </TabsList>
+
+            {/* Create Sheet Tab */}
+            <TabsContent value="create">
+              <Card className="p-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-gray-900">
+                    Créer une nouvelle fiche pédagogique
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={createSheet} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <Label htmlFor="title">Titre</Label>
+                        <Input
+                          id="title"
+                          value={newSheet.title}
+                          onChange={(e) => setNewSheet(prev => ({ ...prev, title: e.target.value }))}
+                          placeholder="Ex: Les fractions - CM2"
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="level">Niveau</Label>
+                        <Select
+                          value={newSheet.level}
+                          onValueChange={(value) => setNewSheet(prev => ({ ...prev, level: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {levels.map(level => (
+                              <SelectItem key={level} value={level}>{level}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="description">Description</Label>
+                      <textarea
+                        id="description"
+                        value={newSheet.description}
+                        onChange={(e) => setNewSheet(prev => ({ ...prev, description: e.target.value }))}
+                        className="w-full p-3 border border-gray-300 rounded-md resize-none"
+                        rows="3"
+                        placeholder="Décrivez le contenu de la fiche..."
+                        required
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                      <div>
+                        <Label htmlFor="subject">Matière</Label>
+                        <Select
+                          value={newSheet.subject}
+                          onValueChange={(value) => setNewSheet(prev => ({ ...prev, subject: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {subjects.map(subject => (
+                              <SelectItem key={subject} value={subject}>
+                                {subject.charAt(0).toUpperCase() + subject.slice(1)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="is_premium"
+                            checked={newSheet.is_premium}
+                            onChange={(e) => setNewSheet(prev => ({ ...prev, is_premium: e.target.checked }))}
+                          />
+                          <Label htmlFor="is_premium">Premium</Label>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="is_teacher_only"
+                            checked={newSheet.is_teacher_only}
+                            onChange={(e) => setNewSheet(prev => ({ ...prev, is_teacher_only: e.target.checked }))}
+                          />
+                          <Label htmlFor="is_teacher_only">Professeurs uniquement</Label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="file">Fichier PDF</Label>
+                      <Input
+                        id="file"
+                        type="file"
+                        accept=".pdf"
+                        onChange={(e) => setNewSheet(prev => ({ ...prev, file: e.target.files[0] }))}
+                        required
+                      />
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      className="bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600"
+                      disabled={!newSheet.file}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Créer la fiche
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Manage Sheets Tab */}
+            <TabsContent value="manage">
+              <Card className="p-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-gray-900">
+                    Gérer les fiches pédagogiques
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {adminSheets.map(sheet => (
+                      <div key={sheet.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-semibold text-gray-900">{sheet.title}</h3>
+                            <Badge variant="outline">{sheet.level}</Badge>
+                            {sheet.is_premium && (
+                              <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+                                Premium
+                              </Badge>
+                            )}
+                            {sheet.is_teacher_only && (
+                              <Badge variant="secondary">Professeurs</Badge>
+                            )}
+                          </div>
+                          <p className="text-gray-600 text-sm">{sheet.description}</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {sheet.subject} • Créé le {new Date(sheet.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => downloadFile(sheet.file_url)}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => deleteSheet(sheet.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {adminSheets.length === 0 && (
+                      <div className="text-center py-12">
+                        <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Aucune fiche créée
+                        </h3>
+                        <p className="text-gray-600">
+                          Commencez par créer votre première fiche pédagogique
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    );
+  };
+
   const ContactPage = () => (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
       <Header />
