@@ -326,7 +326,7 @@ class EcoleDesGeniesAPITester:
             "api/auth/login",
             200,
             data={
-                "email": "marine.alves@ecoledesgenies.com",
+                "email": "marine.alves1995@gmail.com",
                 "password": "AdminPass123!"
             }
         )
@@ -334,6 +334,12 @@ class EcoleDesGeniesAPITester:
             self.admin_token = response['token']
             self.admin_user_id = response['user']['id']
             print(f"   Admin token obtained: {self.admin_token[:20]}...")
+            # Verify admin status
+            if response['user'].get('is_admin', False):
+                print("✅ Admin privileges confirmed")
+            else:
+                print("❌ Admin privileges NOT found")
+                return False
         return success
 
     def test_admin_stats(self):
