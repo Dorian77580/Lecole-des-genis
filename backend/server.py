@@ -451,7 +451,20 @@ async def create_pedagogical_sheet(
     
     await db.pedagogical_sheets.insert_one(new_sheet)
     
-    return {"message": "Fiche pédagogique créée avec succès", "sheet": new_sheet}
+    # Return a clean version without datetime serialization issues
+    return_sheet = {
+        "id": new_sheet["id"],
+        "title": new_sheet["title"],
+        "description": new_sheet["description"],
+        "level": new_sheet["level"],
+        "subject": new_sheet["subject"],
+        "is_premium": new_sheet["is_premium"],
+        "is_teacher_only": new_sheet["is_teacher_only"],
+        "file_url": new_sheet["file_url"],
+        "created_at": new_sheet["created_at"].isoformat()
+    }
+    
+    return {"message": "Fiche pédagogique créée avec succès", "sheet": return_sheet}
 
 @app.put("/api/admin/pedagogical-sheets/{sheet_id}")
 async def update_pedagogical_sheet(
