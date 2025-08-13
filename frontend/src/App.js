@@ -72,6 +72,26 @@ function App() {
     setAuthForm(prev => ({ ...prev, [field]: value }));
   }, []);
 
+  const handleFirstNameChange = useCallback((e) => {
+    handleAuthFormChange('firstName', e.target.value);
+  }, [handleAuthFormChange]);
+
+  const handleLastNameChange = useCallback((e) => {
+    handleAuthFormChange('lastName', e.target.value);
+  }, [handleAuthFormChange]);
+
+  const handleEmailChange = useCallback((e) => {
+    handleAuthFormChange('email', e.target.value);
+  }, [handleAuthFormChange]);
+
+  const handlePasswordChange = useCallback((e) => {
+    handleAuthFormChange('password', e.target.value);
+  }, [handleAuthFormChange]);
+
+  const handleUserTypeChange = useCallback((value) => {
+    handleAuthFormChange('userType', value);
+  }, [handleAuthFormChange]);
+
   const fetchUserProfile = async (token) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/user/profile`, {
