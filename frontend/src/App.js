@@ -686,7 +686,7 @@ function App() {
                 <Label htmlFor="level-filter">Niveau scolaire</Label>
                 <Select
                   value={filters.level}
-                  onValueChange={(value) => setFilters(prev => ({ ...prev, level: value }))}
+                  onValueChange={(value) => setFilters(prev => ({ ...prev, level: value === 'all' ? '' : value }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Tous les niveaux" />
