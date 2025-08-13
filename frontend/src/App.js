@@ -1400,13 +1400,13 @@ function App() {
     </div>
   );
 
-  const AdminPage = () => {
+  const AdminPage = React.memo(() => {
     useEffect(() => {
       if (user && user.is_admin) {
         fetchAdminStats();
         fetchAdminSheets();
       }
-    }, [user, fetchAdminStats, fetchAdminSheets]);
+    }, [user?.is_admin, fetchAdminStats, fetchAdminSheets]);
 
     if (!user || !user.is_admin) {
       return (
