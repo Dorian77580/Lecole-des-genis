@@ -406,6 +406,120 @@ async def download_file(filename: str, current_user = Depends(get_current_user))
         filename=filename
     )
 
+# Admin Routes
+@app.get("/api/admin/pedagogical-sheets")
+async def get_all_pedagogical_sheets_admin(admin_user = Depends(get_admin_user)):
+    sheets = await db.pedagogical_sheets.find({}).to_list(length=1000)
+    return {"sheets": sheets, "total": len(sheets)}
+
+@app.post("/api/admin/pedagogical-sheets")
+async def create_pedagogical_sheet(
+    title: str = Form(...),
+    description: str = Form(...),
+    level: str = Form(...),
+    subject: str = Form(...),
+    is_premium: bool = Form(False),
+    is_teacher_only: bool = Form(False),
+    file: UploadFile = File(...),
+    admin_user = Depends(get_admin_user)
+):
+    # Save uploaded file
+    file_id = str(uuid.uuid4())
+    file_extension = file.filename.split('.')[-1] if '.' in file.filename else 'pdf'
+    new_filename = f"{file_id}.{file_extension}"
+    file_path = f"/tmp/uploaded_files/{new_filename}"
+    
+    os.makedirs("/tmp/uploaded_files", exist_ok=True)
+    
+    with open(file_path, "wb") as buffer:
+        content = await file.read()
+        buffer.write(content)
+    
+    # Create pedagogical sheet record
+    sheet_id = str(uuid.uuid4())
+    new_sheet = {
+        "id": sheet_id,
+        "title": title,
+        "description": description,
+        "level": level,
+        "subject": subject,
+        "is_premium": is_premium,
+        "is_teacher_only": is_teacher_only,
+        "file_url": f"/api/files/{new_filename}",
+        "created_at": datetime.utcnow()
+    }
+    
+    await db.pedagogical_sheets.insert_one(new_sheet)
+    
+    return {"message": "Fiche pédagogique créée avec succès", "sheet": new_sheet}
+
+@app.put("/api/admin/pedagogical-sheets/{sheet_id}")
+async def update_pedagogical_sheet(
+    sheet_id: str,
+    sheet_data: PedagogicalSheetUpdate,
+    admin_user = Depends(get_admin_user)
+):
+    # Find existing sheet
+    existing_sheet = await db.pedagogical_sheets.find_one({"id": sheet_id})
+    if not existing_sheet:
+        raise HTTPException(status_code=404, detail="Fiche non trouvée")
+    
+    # Update only provided fields
+    update_data = {k: v for k, v in sheet_data.dict().items() if v is not None}
+    
+    if update_data:
+        await db.pedagogical_sheets.update_one(
+            {"id": sheet_id},
+            {"$set": update_data}
+        )
+    
+    # Get updated sheet
+    updated_sheet = await db.pedagogical_sheets.find_one({"id": sheet_id})
+    
+    return {"message": "Fiche mise à jour avec succès", "sheet": updated_sheet}
+
+@app.delete("/api/admin/pedagogical-sheets/{sheet_id}")
+async def delete_pedagogical_sheet(
+    sheet_id: str,
+    admin_user = Depends(get_admin_user)
+):
+    # Find and delete sheet
+    result = await db.pedagogical_sheets.delete_one({"id": sheet_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Fiche non trouvée")
+    
+    return {"message": "Fiche supprimée avec succès"}
+
+@app.get("/api/admin/stats")
+async def get_admin_stats(admin_user = Depends(get_admin_user)):
+    # Get statistics for admin dashboard
+    total_users = await db.users.count_documents({})
+    total_parents = await db.users.count_documents({"user_type": "parent"})
+    total_teachers = await db.users.count_documents({"user_type": "teacher"})
+    premium_users = await db.users.count_documents({"is_premium": True})
+    verified_teachers = await db.users.count_documents({"user_type": "teacher", "is_verified": True})
+    
+    total_sheets = await db.pedagogical_sheets.count_documents({})
+    premium_sheets = await db.pedagogical_sheets.count_documents({"is_premium": True})
+    teacher_sheets = await db.pedagogical_sheets.count_documents({"is_teacher_only": True})
+    
+    return {
+        "users": {
+            "total": total_users,
+            "parents": total_parents,
+            "teachers": total_teachers,
+            "premium": premium_users,
+            "verified_teachers": verified_teachers
+        },
+        "sheets": {
+            "total": total_sheets,
+            "premium": premium_sheets,
+            "teacher_only": teacher_sheets,
+            "free": total_sheets - premium_sheets - teacher_sheets
+        }
+    }
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
