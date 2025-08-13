@@ -424,7 +424,7 @@ function App() {
   }, [fetchAdminSheets]);
 
   // Admin password reset function
-  const resetUserPassword = async (email, newPassword) => {
+  const resetUserPassword = useCallback(async (email, newPassword) => {
     try {
       const token = localStorage.getItem('token');
       const formData = new FormData();
@@ -444,7 +444,7 @@ function App() {
       showAlert('Erreur lors de la réinitialisation', 'error');
       throw error;
     }
-  };
+  }, []);
 
   // Password reset functions
   const handleForgotPassword = async (e) => {
