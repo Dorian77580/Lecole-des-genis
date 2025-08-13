@@ -531,7 +531,7 @@ function App() {
                         autoComplete="family-name"
                         placeholder="Votre nom"
                         value={authForm.lastName}
-                        onChange={(e) => setAuthForm(prev => ({ ...prev, lastName: e.target.value }))}
+                        onChange={(e) => handleAuthFormChange('lastName', e.target.value)}
                         required
                       />
                     </div>
