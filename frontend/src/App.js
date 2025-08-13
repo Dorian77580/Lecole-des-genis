@@ -423,6 +423,29 @@ function App() {
     }
   };
 
+  // Admin password reset function
+  const resetUserPassword = async (email, newPassword) => {
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('new_password', newPassword);
+
+      const response = await axios.post(`${API_BASE_URL}/api/admin/reset-user-password`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      showAlert(`Mot de passe réinitialisé pour ${email}`, 'success');
+      return response.data;
+    } catch (error) {
+      showAlert('Erreur lors de la réinitialisation', 'error');
+      throw error;
+    }
+  };
+
   // Password reset functions
   const handleForgotPassword = async (e) => {
     e.preventDefault();
