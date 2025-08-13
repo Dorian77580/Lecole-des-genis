@@ -509,6 +509,22 @@ function App() {
                 Mon espace
               </Button>
             )}
+            {user && user.is_admin && (
+              <Button 
+                variant="ghost" 
+                onClick={() => { setCurrentView('admin'); setIsMenuOpen(false); }}
+                className="w-full text-left justify-start text-gray-700 hover:text-rose-600"
+              >
+                Admin
+              </Button>
+            )}
+            <Button 
+              variant="ghost" 
+              onClick={() => { setCurrentView('premium'); setIsMenuOpen(false); }}
+              className="w-full text-left justify-start text-gray-700 hover:text-rose-600"
+            >
+              Premium
+            </Button>
             <Button 
               variant="ghost" 
               onClick={() => { setCurrentView('about'); setIsMenuOpen(false); }}
