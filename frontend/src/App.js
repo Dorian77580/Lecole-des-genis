@@ -366,7 +366,7 @@ function App() {
     }
   }, []);
 
-  const createSheet = async (e) => {
+  const createSheet = useCallback(async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
@@ -405,7 +405,7 @@ function App() {
     } catch (error) {
       showAlert('Erreur lors de la création', 'error');
     }
-  };
+  }, [newSheet, fetchAdminSheets]);
 
   const deleteSheet = async (sheetId) => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette fiche ?')) return;
