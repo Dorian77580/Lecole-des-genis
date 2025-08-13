@@ -564,7 +564,7 @@ function App() {
                   autoComplete="email"
                   placeholder="votre@email.com"
                   value={authForm.email}
-                  onChange={(e) => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
+                  onChange={(e) => handleAuthFormChange('email', e.target.value)}
                   required
                 />
               </div>
