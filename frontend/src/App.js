@@ -1661,6 +1661,8 @@ function App() {
       </CardContent>
     </Card>
   ));
+
+  const AdminPage = () => {
     useEffect(() => {
       if (user && user.is_admin) {
         fetchAdminStats();
