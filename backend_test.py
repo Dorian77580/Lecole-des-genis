@@ -630,6 +630,8 @@ def main():
         ("Admin Get All Sheets", tester.test_admin_get_all_sheets),
         ("Admin Create Sheet", tester.test_admin_create_sheet),
         ("Admin Delete Sheet", tester.test_admin_delete_sheet),
+        ("Admin Password Reset", tester.test_admin_reset_user_password),
+        ("Admin Reset Marine Password", tester.test_admin_reset_marine_password),
         ("Non-Admin Access Protection", tester.test_non_admin_access_to_admin_routes),
         ("Unauthorized Access", tester.test_unauthorized_access),
         ("Invalid Login", tester.test_invalid_login),
