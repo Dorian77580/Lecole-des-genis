@@ -1406,7 +1406,7 @@ function App() {
         fetchAdminStats();
         fetchAdminSheets();
       }
-    }, [user]);
+    }, [user, fetchAdminStats, fetchAdminSheets]);
 
     if (!user || !user.is_admin) {
       return (
