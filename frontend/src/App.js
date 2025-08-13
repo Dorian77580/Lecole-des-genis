@@ -86,8 +86,8 @@ function App() {
     try {
       const token = localStorage.getItem('token');
       const params = new URLSearchParams();
-      if (filters.level) params.append('level', filters.level);
-      if (filters.subject) params.append('subject', filters.subject);
+      if (filters.level && filters.level !== 'all') params.append('level', filters.level);
+      if (filters.subject && filters.subject !== 'all') params.append('subject', filters.subject);
       
       const response = await axios.get(`${API_BASE_URL}/api/pedagogical-sheets?${params}`, {
         headers: { Authorization: `Bearer ${token}` }
