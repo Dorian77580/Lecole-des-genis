@@ -1485,6 +1485,7 @@ function App() {
             <TabsList className="bg-white">
               <TabsTrigger value="create">Créer une fiche</TabsTrigger>
               <TabsTrigger value="manage">Gérer les fiches</TabsTrigger>
+              <TabsTrigger value="users">Gestion utilisateurs</TabsTrigger>
             </TabsList>
 
             {/* Create Sheet Tab */}
