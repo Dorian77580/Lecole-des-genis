@@ -1674,6 +1674,83 @@ function App() {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {/* User Management Tab */}
+            <TabsContent value="users">
+              <Card className="p-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-gray-900">
+                    Réinitialisation de mot de passe
+                  </CardTitle>
+                  <p className="text-gray-600">
+                    Réinitialisez le mot de passe d'un utilisateur
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-yellow-800 mb-2">Réinitialisation rapide</h4>
+                      <div className="space-y-4">
+                        <Button
+                          onClick={() => resetUserPassword('Marine.alves1995@gmail.com', 'Marine77')}
+                          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                        >
+                          Réinitialiser mon mot de passe → Marine77
+                        </Button>
+                        <p className="text-sm text-yellow-700">
+                          Ceci réinitialisera le mot de passe de Marine.alves1995@gmail.com à "Marine77"
+                        </p>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-4">Réinitialisation personnalisée</h4>
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        const formData = new FormData(e.target);
+                        const email = formData.get('email');
+                        const password = formData.get('password');
+                        resetUserPassword(email, password);
+                        e.target.reset();
+                      }} className="space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="reset-email">Email utilisateur</Label>
+                            <Input
+                              id="reset-email"
+                              name="email"
+                              type="email"
+                              placeholder="utilisateur@example.com"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="reset-password">Nouveau mot de passe</Label>
+                            <Input
+                              id="reset-password"
+                              name="password"
+                              type="text"
+                              placeholder="NouveauMotDePasse123"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <Button 
+                          type="submit"
+                          variant="outline"
+                          className="border-rose-300 text-rose-600 hover:bg-rose-50"
+                        >
+                          <Settings className="mr-2 h-4 w-4" />
+                          Réinitialiser le mot de passe
+                        </Button>
+                      </form>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
         </div>
       </div>
