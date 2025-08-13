@@ -309,6 +309,33 @@ class AdminPasswordResetTester:
         
         return success
 
+    def test_endpoint_without_auth(self):
+        """Test that the endpoint requires authentication"""
+        data = {
+            'email': 'someone@test.com',
+            'new_password': 'NewPass123!'
+        }
+        success, response = self.run_test(
+            "Password Reset Without Auth (Should Fail)",
+            "POST",
+            "api/admin/reset-user-password",
+            401,  # Should return 401 or 403
+            data=data,
+            files={}
+        )
+        
+        # Accept both 401 and 403 as valid responses
+        if not success and response and "401" in str(response):
+            print("✅ Correctly rejected - 401 Unauthorized")
+            self.tests_passed += 1
+            return True
+        elif not success and response and "403" in str(response):
+            print("✅ Correctly rejected - 403 Forbidden")
+            self.tests_passed += 1
+            return True
+        
+        return success
+
 def main():
     print("🚀 Testing Admin Password Reset Functionality")
     print("=" * 60)
