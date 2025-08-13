@@ -393,6 +393,43 @@ function App() {
     }
   };
 
+  // Password reset functions
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${API_BASE_URL}/api/auth/forgot-password`, {
+        email: resetEmail
+      });
+      
+      showAlert('Si cet email existe, vous recevrez un lien de réinitialisation', 'success');
+      setAuthMode('login');
+      setResetEmail('');
+    } catch (error) {
+      showAlert('Erreur lors de la demande de réinitialisation', 'error');
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${API_BASE_URL}/api/auth/reset-password`, {
+        token: resetToken,
+        new_password: newPassword
+      });
+      
+      showAlert('Mot de passe réinitialisé avec succès! Vous pouvez maintenant vous connecter.', 'success');
+      setCurrentView('auth');
+      setAuthMode('login');
+      setResetToken('');
+      setNewPassword('');
+      
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } catch (error) {
+      showAlert(error.response?.data?.detail || 'Erreur lors de la réinitialisation', 'error');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50 flex items-center justify-center">
