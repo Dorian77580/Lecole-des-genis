@@ -509,6 +509,10 @@ function App() {
                       <Label htmlFor="firstName">Prénom</Label>
                       <Input
                         id="firstName"
+                        name="firstName"
+                        type="text"
+                        autoComplete="given-name"
+                        placeholder="Votre prénom"
                         value={authForm.firstName}
                         onChange={(e) => setAuthForm(prev => ({ ...prev, firstName: e.target.value }))}
                         required
@@ -518,6 +522,10 @@ function App() {
                       <Label htmlFor="lastName">Nom</Label>
                       <Input
                         id="lastName"
+                        name="lastName"
+                        type="text"
+                        autoComplete="family-name"
+                        placeholder="Votre nom"
                         value={authForm.lastName}
                         onChange={(e) => setAuthForm(prev => ({ ...prev, lastName: e.target.value }))}
                         required
