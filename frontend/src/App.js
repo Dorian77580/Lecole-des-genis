@@ -561,7 +561,7 @@ function App() {
                     <Label htmlFor="userType">Je suis</Label>
                     <Select
                       value={authForm.userType}
-                      onValueChange={(value) => handleAuthFormChange('userType', value)}
+                      onValueChange={handleUserTypeChange}
                     >
                       <SelectTrigger>
                         <SelectValue />
