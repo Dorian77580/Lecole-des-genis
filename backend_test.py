@@ -7,14 +7,17 @@ import tempfile
 import os
 
 class EcoleDesGeniesAPITester:
-    def __init__(self, base_url="https://education-positive.preview.emergentagent.com"):
+    def __init__(self, base_url="https://92d0f233-b260-4385-8f08-7318b67c32de.preview.emergentagent.com"):
         self.base_url = base_url
         self.parent_token = None
         self.teacher_token = None
+        self.admin_token = None
         self.tests_run = 0
         self.tests_passed = 0
         self.parent_user_id = None
         self.teacher_user_id = None
+        self.admin_user_id = None
+        self.created_sheet_id = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, headers=None, files=None):
         """Run a single API test"""
