@@ -409,7 +409,7 @@ async def download_file(filename: str, current_user = Depends(get_current_user))
 # Admin Routes
 @app.get("/api/admin/pedagogical-sheets")
 async def get_all_pedagogical_sheets_admin(admin_user = Depends(get_admin_user)):
-    sheets = await db.pedagogical_sheets.find({}).to_list(length=1000)
+    sheets = await db.pedagogical_sheets.find({}, {"_id": 0}).to_list(length=1000)
     return {"sheets": sheets, "total": len(sheets)}
 
 @app.post("/api/admin/pedagogical-sheets")
