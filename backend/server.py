@@ -474,7 +474,7 @@ async def update_pedagogical_sheet(
         )
     
     # Get updated sheet
-    updated_sheet = await db.pedagogical_sheets.find_one({"id": sheet_id})
+    updated_sheet = await db.pedagogical_sheets.find_one({"id": sheet_id}, {"_id": 0})
     
     return {"message": "Fiche mise à jour avec succès", "sheet": updated_sheet}
 
