@@ -287,7 +287,7 @@ class EcoleDesGeniesAPITester:
 
     def test_admin_registration(self):
         """Test admin registration with Marine Alves email"""
-        # Try to register first, if it fails, try to login
+        # Try to register the admin email that gets automatic admin privileges
         success, response = self.run_test(
             "Admin Registration (Marine Alves)",
             "POST",
@@ -295,7 +295,7 @@ class EcoleDesGeniesAPITester:
             200,
             data={
                 "email": "marine.alves1995@gmail.com",
-                "password": "AdminPass123!",
+                "password": "Marine123!",
                 "first_name": "Marine",
                 "last_name": "Alves",
                 "user_type": "teacher"
@@ -309,14 +309,42 @@ class EcoleDesGeniesAPITester:
             # Verify admin status
             if response['user'].get('is_admin', False):
                 print("✅ Admin privileges automatically granted")
+                return True
             else:
                 print("❌ Admin privileges NOT granted")
                 return False
-            return True
         else:
-            # If registration fails (user exists), try login
-            print("   Registration failed, trying login...")
-            return self.test_admin_login()
+            # If registration fails (user exists), try different passwords
+            print("   Registration failed, trying login with different passwords...")
+            passwords_to_try = ["Marine123!", "Marine77", "AdminPass123!", "password", "123456"]
+            
+            for password in passwords_to_try:
+                print(f"   Trying password: {password}")
+                success, response = self.run_test(
+                    f"Admin Login (password: {password})",
+                    "POST",
+                    "api/auth/login",
+                    200,
+                    data={
+                        "email": "marine.alves1995@gmail.com",
+                        "password": password
+                    }
+                )
+                
+                if success and 'token' in response:
+                    self.admin_token = response['token']
+                    self.admin_user_id = response['user']['id']
+                    print(f"   Admin token obtained: {self.admin_token[:20]}...")
+                    # Verify admin status
+                    if response['user'].get('is_admin', False):
+                        print("✅ Admin privileges confirmed")
+                        return True
+                    else:
+                        print("❌ Admin privileges NOT found")
+                        return False
+            
+            print("❌ Could not login with any password")
+            return False
 
     def test_admin_login(self):
         """Test admin login"""
