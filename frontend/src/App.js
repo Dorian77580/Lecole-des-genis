@@ -704,7 +704,7 @@ function App() {
                 <Label htmlFor="subject-filter">Matière</Label>
                 <Select
                   value={filters.subject}
-                  onValueChange={(value) => setFilters(prev => ({ ...prev, subject: value }))}
+                  onValueChange={(value) => setFilters(prev => ({ ...prev, subject: value === 'all' ? '' : value }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Toutes les matières" />
