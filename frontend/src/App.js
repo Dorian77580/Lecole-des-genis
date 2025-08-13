@@ -1837,6 +1837,7 @@ function App() {
       {currentView === 'dashboard' && user && <DashboardPage />}
       {currentView === 'premium' && <PremiumPage />}
       {currentView === 'admin' && <AdminPage />}
+      {currentView === 'reset-password' && <ResetPasswordPage />}
       {currentView === 'about' && <AboutPage />}
       {currentView === 'contact' && <ContactPage />}
     </div>
