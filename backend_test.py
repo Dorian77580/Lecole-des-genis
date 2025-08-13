@@ -425,6 +425,148 @@ class EcoleDesGeniesAPITester:
         )
         return success
 
+    def test_admin_reset_user_password(self):
+        """Test admin password reset functionality"""
+        if not self.admin_token:
+            print("❌ Skipping - No admin token available")
+            return False
+        
+        # First, register a test user to reset password for
+        test_email = f"reset_test_{datetime.now().strftime('%H%M%S')}@test.com"
+        success, response = self.run_test(
+            "Register Test User for Password Reset",
+            "POST",
+            "api/auth/register",
+            200,
+            data={
+                "email": test_email,
+                "password": "OriginalPass123!",
+                "first_name": "Reset",
+                "last_name": "Test",
+                "user_type": "parent"
+            }
+        )
+        
+        if not success:
+            print("❌ Failed to create test user for password reset")
+            return False
+        
+        # Test admin password reset
+        data = {
+            'email': test_email,
+            'new_password': 'NewPassword123!'
+        }
+        success, response = self.run_test(
+            "Admin Reset User Password",
+            "POST",
+            "api/admin/reset-user-password",
+            200,
+            data=data,
+            files={},  # This will trigger form-data handling
+            headers={'Authorization': f'Bearer {self.admin_token}'}
+        )
+        
+        if success:
+            # Verify the password was actually changed by trying to login with new password
+            success2, response2 = self.run_test(
+                "Login with New Password",
+                "POST",
+                "api/auth/login",
+                200,
+                data={
+                    "email": test_email,
+                    "password": "NewPassword123!"
+                }
+            )
+            
+            if success2:
+                print("✅ Password reset verified - login successful with new password")
+                
+                # Verify old password no longer works
+                success3, response3 = self.run_test(
+                    "Login with Old Password (Should Fail)",
+                    "POST",
+                    "api/auth/login",
+                    401,
+                    data={
+                        "email": test_email,
+                        "password": "OriginalPass123!"
+                    }
+                )
+                return success and success2 and success3
+            else:
+                print("❌ Password reset failed - cannot login with new password")
+                return False
+        
+        return success
+
+    def test_admin_reset_marine_password(self):
+        """Test specific Marine.alves1995@gmail.com password reset to Marine77"""
+        if not self.admin_token:
+            print("❌ Skipping - No admin token available")
+            return False
+        
+        # First register Marine.alves1995@gmail.com if not exists
+        marine_email = "Marine.alves1995@gmail.com"
+        success, response = self.run_test(
+            "Register Marine Alves Account",
+            "POST",
+            "api/auth/register",
+            200,
+            data={
+                "email": marine_email,
+                "password": "TempPassword123!",
+                "first_name": "Marine",
+                "last_name": "Alves",
+                "user_type": "teacher"
+            }
+        )
+        
+        # It's OK if this fails (user might already exist)
+        print(f"   Marine registration result: {'Success' if success else 'User may already exist'}")
+        
+        # Test admin password reset to Marine77
+        data = {
+            'email': marine_email,
+            'new_password': 'Marine77'
+        }
+        success, response = self.run_test(
+            "Admin Reset Marine Password to Marine77",
+            "POST",
+            "api/admin/reset-user-password",
+            200,
+            data=data,
+            files={},  # This will trigger form-data handling
+            headers={'Authorization': f'Bearer {self.admin_token}'}
+        )
+        
+        if success:
+            # Verify login with Marine77
+            success2, response2 = self.run_test(
+                "Login Marine with Marine77",
+                "POST",
+                "api/auth/login",
+                200,
+                data={
+                    "email": marine_email,
+                    "password": "Marine77"
+                }
+            )
+            
+            if success2:
+                print("✅ Marine password reset verified - login successful with Marine77")
+                # Check if admin privileges are maintained
+                if response2.get('user', {}).get('is_admin', False):
+                    print("✅ Admin privileges maintained after password reset")
+                else:
+                    print("❌ Admin privileges lost after password reset")
+                    return False
+            else:
+                print("❌ Marine password reset failed - cannot login with Marine77")
+                return False
+        
+        return success and success2
+
     def test_non_admin_access_to_admin_routes(self):
         """Test that non-admin users cannot access admin routes"""
         if not self.parent_token:
