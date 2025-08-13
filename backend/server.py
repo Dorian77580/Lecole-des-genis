@@ -74,12 +74,21 @@ class PedagogicalSheet(BaseModel):
     file_url: str
     created_at: datetime
 
-class TeacherVerification(BaseModel):
-    id: str
-    user_id: str
-    document_url: str
-    status: str  # "pending", "approved", "rejected"
-    created_at: datetime
+class PedagogicalSheetCreate(BaseModel):
+    title: str
+    description: str
+    level: str
+    subject: str
+    is_premium: bool = False
+    is_teacher_only: bool = False
+
+class PedagogicalSheetUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    level: Optional[str] = None
+    subject: Optional[str] = None
+    is_premium: Optional[bool] = None
+    is_teacher_only: Optional[bool] = None
 
 # Helper functions
 def hash_password(password: str) -> str:
