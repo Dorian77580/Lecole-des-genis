@@ -450,9 +450,23 @@ class EcoleDesGeniesAPITester:
             return success and success2
         return success
 
+    def test_invalid_login(self):
+        """Test invalid login credentials"""
+        success, response = self.run_test(
+            "Invalid Login",
+            "POST",
+            "api/auth/login",
+            401,
+            data={
+                "email": "nonexistent@test.com",
+                "password": "wrongpassword"
+            }
+        )
+        return success
+
 def main():
-    print("🚀 Starting L'École des Génies API Tests")
-    print("=" * 50)
+    print("🚀 Starting L'École des Génies API Tests (Including Admin Features)")
+    print("=" * 70)
     
     tester = EcoleDesGeniesAPITester()
     
@@ -461,6 +475,7 @@ def main():
         ("Health Check", tester.test_health_check),
         ("Parent Registration", tester.test_parent_registration),
         ("Teacher Registration", tester.test_teacher_registration),
+        ("Admin Registration", tester.test_admin_registration),
         ("Parent Profile", tester.test_get_profile_parent),
         ("Teacher Profile", tester.test_get_profile_teacher),
         ("Pedagogical Sheets (Parent)", tester.test_get_pedagogical_sheets_parent),
@@ -469,6 +484,11 @@ def main():
         ("Premium Subscription", tester.test_premium_subscription),
         ("Teacher Verification Upload", tester.test_teacher_verification_upload),
         ("File Download", tester.test_file_download),
+        ("Admin Stats", tester.test_admin_stats),
+        ("Admin Get All Sheets", tester.test_admin_get_all_sheets),
+        ("Admin Create Sheet", tester.test_admin_create_sheet),
+        ("Admin Delete Sheet", tester.test_admin_delete_sheet),
+        ("Non-Admin Access Protection", tester.test_non_admin_access_to_admin_routes),
         ("Unauthorized Access", tester.test_unauthorized_access),
         ("Invalid Login", tester.test_invalid_login),
     ]
