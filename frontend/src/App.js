@@ -555,7 +555,10 @@ function App() {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
+                  placeholder="votre@email.com"
                   value={authForm.email}
                   onChange={(e) => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
                   required
@@ -566,7 +569,10 @@ function App() {
                 <Label htmlFor="password">Mot de passe</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
+                  autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
+                  placeholder="Votre mot de passe"
                   value={authForm.password}
                   onChange={(e) => setAuthForm(prev => ({ ...prev, password: e.target.value }))}
                   required
