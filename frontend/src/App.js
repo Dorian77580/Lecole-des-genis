@@ -63,9 +63,8 @@ function App() {
     }
   }, [user, filters]);
 
-  const showAlert = (message, type = 'info') => {
-    setAlert({ show: true, message, type });
-    setTimeout(() => setAlert({ show: false, message: '', type: 'info' }), 5000);
+  const handleAuthFormChange = (field, value) => {
+    setAuthForm(prev => ({ ...prev, [field]: value }));
   };
 
   const fetchUserProfile = async (token) => {
