@@ -285,18 +285,169 @@ class EcoleDesGeniesAPITester:
         )
         return success
 
-    def test_invalid_login(self):
-        """Test invalid login credentials"""
+    def test_admin_registration(self):
+        """Test admin registration with Marine Alves email"""
         success, response = self.run_test(
-            "Invalid Login",
+            "Admin Registration (Marine Alves)",
             "POST",
-            "api/auth/login",
-            401,
+            "api/auth/register",
+            200,
             data={
-                "email": "nonexistent@test.com",
-                "password": "wrongpassword"
+                "email": "marine.alves@ecoledesgenies.com",
+                "password": "AdminPass123!",
+                "first_name": "Marine",
+                "last_name": "Alves",
+                "user_type": "teacher"
             }
         )
+        if success and 'token' in response:
+            self.admin_token = response['token']
+            self.admin_user_id = response['user']['id']
+            print(f"   Admin token obtained: {self.admin_token[:20]}...")
+            # Verify admin status
+            if response['user'].get('is_admin', False):
+                print("✅ Admin privileges automatically granted")
+            else:
+                print("❌ Admin privileges NOT granted")
+                return False
+        return success
+
+    def test_admin_login(self):
+        """Test admin login"""
+        success, response = self.run_test(
+            "Admin Login",
+            "POST",
+            "api/auth/login",
+            200,
+            data={
+                "email": "marine.alves@ecoledesgenies.com",
+                "password": "AdminPass123!"
+            }
+        )
+        if success and 'token' in response:
+            self.admin_token = response['token']
+            self.admin_user_id = response['user']['id']
+            print(f"   Admin token obtained: {self.admin_token[:20]}...")
+        return success
+
+    def test_admin_stats(self):
+        """Test admin stats endpoint"""
+        if not self.admin_token:
+            print("❌ Skipping - No admin token available")
+            return False
+            
+        success, response = self.run_test(
+            "Admin Stats",
+            "GET",
+            "api/admin/stats",
+            200,
+            headers={'Authorization': f'Bearer {self.admin_token}'}
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify stats structure
+            if 'users' in response and 'sheets' in response:
+                print("✅ Stats structure is correct")
+                print(f"   Users: {response['users']}")
+                print(f"   Sheets: {response['sheets']}")
+            else:
+                print("❌ Stats structure is incorrect")
+                return False
+        return success
+
+    def test_admin_get_all_sheets(self):
+        """Test admin get all pedagogical sheets"""
+        if not self.admin_token:
+            print("❌ Skipping - No admin token available")
+            return False
+            
+        success, response = self.run_test(
+            "Admin Get All Sheets",
+            "GET",
+            "api/admin/pedagogical-sheets",
+            200,
+            headers={'Authorization': f'Bearer {self.admin_token}'}
+        )
+        return success
+
+    def test_admin_create_sheet(self):
+        """Test admin create pedagogical sheet"""
+        if not self.admin_token:
+            print("❌ Skipping - No admin token available")
+            return False
+        
+        # Create a temporary test PDF file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.pdf', delete=False) as temp_file:
+            temp_file.write("Test PDF content for pedagogical sheet")
+            temp_file_path = temp_file.name
+        
+        try:
+            with open(temp_file_path, 'rb') as f:
+                files = {'file': ('test_sheet.pdf', f, 'application/pdf')}
+                data = {
+                    'title': 'Test Admin Sheet',
+                    'description': 'Test sheet created by admin',
+                    'level': 'CP',
+                    'subject': 'mathématiques',
+                    'is_premium': 'true',
+                    'is_teacher_only': 'false'
+                }
+                success, response = self.run_test(
+                    "Admin Create Sheet",
+                    "POST",
+                    "api/admin/pedagogical-sheets",
+                    200,
+                    data=data,
+                    files=files,
+                    headers={'Authorization': f'Bearer {self.admin_token}'}
+                )
+                
+                if success and isinstance(response, dict) and 'sheet' in response:
+                    self.created_sheet_id = response['sheet']['id']
+                    print(f"   Created sheet ID: {self.created_sheet_id}")
+        finally:
+            os.unlink(temp_file_path)
+        
+        return success
+
+    def test_admin_delete_sheet(self):
+        """Test admin delete pedagogical sheet"""
+        if not self.admin_token or not self.created_sheet_id:
+            print("❌ Skipping - No admin token or sheet ID available")
+            return False
+            
+        success, response = self.run_test(
+            "Admin Delete Sheet",
+            "DELETE",
+            f"api/admin/pedagogical-sheets/{self.created_sheet_id}",
+            200,
+            headers={'Authorization': f'Bearer {self.admin_token}'}
+        )
+        return success
+
+    def test_non_admin_access_to_admin_routes(self):
+        """Test that non-admin users cannot access admin routes"""
+        if not self.parent_token:
+            print("❌ Skipping - No parent token available")
+            return False
+            
+        success, response = self.run_test(
+            "Non-Admin Access to Admin Stats (Should Fail)",
+            "GET",
+            "api/admin/stats",
+            403,
+            headers={'Authorization': f'Bearer {self.parent_token}'}
+        )
+        
+        if success:
+            success2, response2 = self.run_test(
+                "Non-Admin Access to Admin Sheets (Should Fail)",
+                "GET",
+                "api/admin/pedagogical-sheets",
+                403,
+                headers={'Authorization': f'Bearer {self.parent_token}'}
+            )
+            return success and success2
         return success
 
 def main():
