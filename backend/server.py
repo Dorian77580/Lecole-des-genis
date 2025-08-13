@@ -126,6 +126,51 @@ def create_jwt_token(user_data: dict) -> str:
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
+def create_reset_token(email: str) -> str:
+    payload = {
+        "email": email,
+        "type": "password_reset",
+        "exp": datetime.utcnow() + timedelta(hours=1)  # 1 hour expiration
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+async def send_password_reset_email(email: str, reset_token: str):
+    # In production, use a real email service like SendGrid, Amazon SES, etc.
+    # For now, we'll simulate by logging
+    reset_link = f"http://localhost:3000/reset-password?token={reset_token}"
+    
+    email_content = f"""
+    Bonjour,
+    
+    Vous avez demandé à réinitialiser votre mot de passe pour L'École des Génies.
+    
+    Cliquez sur le lien suivant pour réinitialiser votre mot de passe :
+    {reset_link}
+    
+    Ce lien expirera dans 1 heure.
+    
+    Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.
+    
+    Cordialement,
+    L'équipe de L'École des Génies
+    """
+    
+    # Simulate email sending by writing to a log file
+    log_dir = "/tmp/email_logs"
+    os.makedirs(log_dir, exist_ok=True)
+    
+    with open(f"{log_dir}/password_reset_{email.replace('@', '_')}.txt", "w") as f:
+        f.write(f"TO: {email}\n")
+        f.write(f"SUBJECT: Réinitialisation de mot de passe - L'École des Génies\n")
+        f.write(f"DATE: {datetime.utcnow()}\n")
+        f.write(f"RESET_TOKEN: {reset_token}\n")
+        f.write(f"RESET_LINK: {reset_link}\n\n")
+        f.write(email_content)
+    
+    print(f"📧 Password reset email simulated for {email}")
+    print(f"🔗 Reset link: {reset_link}")
+    return True
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
         payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
