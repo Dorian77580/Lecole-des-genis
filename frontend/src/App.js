@@ -424,6 +424,22 @@ function App() {
                 Mon espace
               </Button>
             )}
+            {user && user.is_admin && (
+              <Button 
+                variant="ghost" 
+                onClick={() => setCurrentView('admin')}
+                className="text-gray-700 hover:text-rose-600"
+              >
+                Admin
+              </Button>
+            )}
+            <Button 
+              variant="ghost" 
+              onClick={() => setCurrentView('premium')}
+              className="text-gray-700 hover:text-rose-600"
+            >
+              Premium
+            </Button>
             <Button 
               variant="ghost" 
               onClick={() => setCurrentView('about')}
