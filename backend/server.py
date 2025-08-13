@@ -279,7 +279,8 @@ async def get_profile(current_user = Depends(get_current_user)):
         "last_name": current_user["last_name"],
         "user_type": current_user["user_type"],
         "is_premium": current_user["is_premium"],
-        "is_verified": current_user["is_verified"]
+        "is_verified": current_user["is_verified"],
+        "is_admin": current_user.get("is_admin", False)
     }
 
 @app.get("/api/pedagogical-sheets")
