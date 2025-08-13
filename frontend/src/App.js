@@ -1672,6 +1672,8 @@ function App() {
       {currentView === 'home' && <HomePage />}
       {currentView === 'auth' && <AuthPage />}
       {currentView === 'dashboard' && user && <DashboardPage />}
+      {currentView === 'premium' && <PremiumPage />}
+      {currentView === 'admin' && <AdminPage />}
       {currentView === 'about' && <AboutPage />}
       {currentView === 'contact' && <ContactPage />}
     </div>
