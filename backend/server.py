@@ -90,6 +90,13 @@ class PedagogicalSheetUpdate(BaseModel):
     is_premium: Optional[bool] = None
     is_teacher_only: Optional[bool] = None
 
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordReset(BaseModel):
+    token: str
+    new_password: str
+
 class TeacherVerification(BaseModel):
     id: str
     user_id: str
