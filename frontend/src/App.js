@@ -776,7 +776,17 @@ function App() {
           <CardContent>
             <AuthForm />
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center space-y-3">
+              {authMode === 'login' && (
+                <Button
+                  variant="link"
+                  onClick={() => setAuthMode('forgot-password')}
+                  className="text-rose-600 text-sm"
+                >
+                  Mot de passe oublié ?
+                </Button>
+              )}
+              
               <Button
                 variant="link"
                 onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
