@@ -82,6 +82,14 @@ class PedagogicalSheetCreate(BaseModel):
     is_premium: bool = False
     is_teacher_only: bool = False
 
+class PedagogicalSheetUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    level: Optional[str] = None
+    subject: Optional[str] = None
+    is_premium: Optional[bool] = None
+    is_teacher_only: Optional[bool] = None
+
 class TeacherVerification(BaseModel):
     id: str
     user_id: str
