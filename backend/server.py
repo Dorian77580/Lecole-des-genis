@@ -332,6 +332,87 @@ async def login(login_data: UserLogin):
         }
     }
 
+@app.post("/api/auth/forgot-password")
+async def forgot_password(request_data: PasswordResetRequest):
+    # Check if user exists
+    user = await db.users.find_one({"email": request_data.email})
+    if not user:
+        # Don't reveal if email exists or not for security
+        return {"message": "Si cet email existe, vous recevrez un lien de réinitialisation"}
+    
+    # Generate reset token
+    reset_token = create_reset_token(request_data.email)
+    
+    # Store reset token in database with expiration
+    reset_record = {
+        "id": str(uuid.uuid4()),
+        "email": request_data.email,
+        "token": reset_token,
+        "used": False,
+        "created_at": datetime.utcnow(),
+        "expires_at": datetime.utcnow() + timedelta(hours=1)
+    }
+    
+    # Clean up old reset tokens for this email
+    await db.password_resets.delete_many({"email": request_data.email})
+    
+    # Insert new reset token
+    await db.password_resets.insert_one(reset_record)
+    
+    # Send email (simulated)
+    await send_password_reset_email(request_data.email, reset_token)
+    
+    return {"message": "Si cet email existe, vous recevrez un lien de réinitialisation"}
+
+@app.post("/api/auth/reset-password")
+async def reset_password(reset_data: PasswordReset):
+    try:
+        # Verify token
+        payload = jwt.decode(reset_data.token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        
+        if payload.get("type") != "password_reset":
+            raise HTTPException(status_code=400, detail="Token invalide")
+        
+        email = payload.get("email")
+        if not email:
+            raise HTTPException(status_code=400, detail="Token invalide")
+        
+        # Check if token exists in database and is not used
+        reset_record = await db.password_resets.find_one({
+            "email": email,
+            "token": reset_data.token,
+            "used": False,
+            "expires_at": {"$gt": datetime.utcnow()}
+        })
+        
+        if not reset_record:
+            raise HTTPException(status_code=400, detail="Token invalide ou expiré")
+        
+        # Find user
+        user = await db.users.find_one({"email": email})
+        if not user:
+            raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+        
+        # Update password
+        hashed_password = hash_password(reset_data.new_password)
+        await db.users.update_one(
+            {"email": email},
+            {"$set": {"password": hashed_password}}
+        )
+        
+        # Mark token as used
+        await db.password_resets.update_one(
+            {"id": reset_record["id"]},
+            {"$set": {"used": True}}
+        )
+        
+        return {"message": "Mot de passe réinitialisé avec succès"}
+        
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=400, detail="Token expiré")
+    except jwt.JWTError:
+        raise HTTPException(status_code=400, detail="Token invalide")
+
 @app.get("/api/user/profile")
 async def get_profile(current_user = Depends(get_current_user)):
     return {
