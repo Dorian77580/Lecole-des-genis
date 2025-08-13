@@ -637,6 +637,33 @@ async def delete_pedagogical_sheet(
     
     return {"message": "Fiche supprimée avec succès"}
 
+@app.post("/api/admin/reset-user-password")
+async def admin_reset_user_password(
+    email: str = Form(...),
+    new_password: str = Form(...),
+    admin_user = Depends(get_admin_user)
+):
+    """Admin endpoint to directly reset a user's password"""
+    
+    # Find user
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    # Hash new password
+    hashed_password = hash_password(new_password)
+    
+    # Update password
+    await db.users.update_one(
+        {"email": email},
+        {"$set": {"password": hashed_password}}
+    )
+    
+    return {
+        "message": f"Mot de passe réinitialisé avec succès pour {email}",
+        "new_password": new_password  # Only for admin convenience - remove in production
+    }
+
 @app.get("/api/admin/stats")
 async def get_admin_stats(admin_user = Depends(get_admin_user)):
     # Get statistics for admin dashboard
