@@ -1489,7 +1489,7 @@ function App() {
             </TabsList>
 
             {/* Create Sheet Tab */}
-            <TabsContent value="create">
+            <TabsContent value="create" className="space-y-6">
               <Card className="p-8">
                 <CardHeader>
                   <CardTitle className="text-2xl text-gray-900">
@@ -1609,7 +1609,7 @@ function App() {
             </TabsContent>
 
             {/* Manage Sheets Tab */}
-            <TabsContent value="manage">
+            <TabsContent value="manage" className="space-y-6">
               <Card className="p-8">
                 <CardHeader>
                   <CardTitle className="text-2xl text-gray-900">
@@ -1676,7 +1676,7 @@ function App() {
             </TabsContent>
 
             {/* User Management Tab */}
-            <TabsContent value="users">
+            <TabsContent value="users" className="space-y-6">
               <Card className="p-8">
                 <CardHeader>
                   <CardTitle className="text-2xl text-gray-900">
