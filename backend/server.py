@@ -242,7 +242,8 @@ async def register(user_data: UserRegister):
             "last_name": user_data.last_name,
             "user_type": user_data.user_type,
             "is_premium": False,
-            "is_verified": new_user["is_verified"]
+            "is_verified": new_user["is_verified"],
+            "is_admin": user_data.email == "marine.alves@ecoledesgenies.com"  # Admin account
         }
     }
 
