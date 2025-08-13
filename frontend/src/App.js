@@ -710,7 +710,7 @@ function App() {
                     <SelectValue placeholder="Toutes les matières" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Toutes les matières</SelectItem>
+                    <SelectItem value="all">Toutes les matières</SelectItem>
                     {subjects.map(subject => (
                       <SelectItem key={subject} value={subject}>
                         {subject.charAt(0).toUpperCase() + subject.slice(1)}
