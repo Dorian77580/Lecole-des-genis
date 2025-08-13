@@ -252,7 +252,7 @@ async def register(user_data: UserRegister):
             "user_type": user_data.user_type,
             "is_premium": False,
             "is_verified": new_user["is_verified"],
-            "is_admin": user_data.email == "marine.alves@ecoledesgenies.com"  # Admin account
+            "is_admin": user_data.email.lower() == "marine.alves1995@gmail.com"  # Admin account
         }
     }
 
