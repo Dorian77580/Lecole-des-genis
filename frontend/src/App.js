@@ -407,7 +407,7 @@ function App() {
     }
   }, [newSheet, fetchAdminSheets]);
 
-  const deleteSheet = async (sheetId) => {
+  const deleteSheet = useCallback(async (sheetId) => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette fiche ?')) return;
     
     try {
@@ -421,7 +421,7 @@ function App() {
     } catch (error) {
       showAlert('Erreur lors de la suppression', 'error');
     }
-  };
+  }, [fetchAdminSheets]);
 
   // Admin password reset function
   const resetUserPassword = async (email, newPassword) => {
