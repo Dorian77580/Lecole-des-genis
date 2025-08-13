@@ -1656,6 +1656,67 @@ function App() {
     );
   };
 
+  const ResetPasswordPage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
+      <Header />
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4">
+        <Card className="w-full max-w-md p-8">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-gray-900">
+              Nouveau mot de passe
+            </CardTitle>
+            <p className="text-gray-600 mt-2">
+              Choisissez un nouveau mot de passe sécurisé
+            </p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <div>
+                <Label htmlFor="new-password">Nouveau mot de passe</Label>
+                <Input
+                  id="new-password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  placeholder="Votre nouveau mot de passe"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+                <p className="text-sm text-gray-600 mt-1">
+                  Minimum 6 caractères
+                </p>
+              </div>
+
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600"
+                disabled={!resetToken || newPassword.length < 6}
+              >
+                Réinitialiser le mot de passe
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <Button
+                variant="link"
+                onClick={() => {
+                  setCurrentView('auth');
+                  setAuthMode('login');
+                  window.history.replaceState({}, document.title, window.location.pathname);
+                }}
+                className="text-rose-600"
+              >
+                Retour à la connexion
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
   const ContactPage = () => (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
       <Header />
