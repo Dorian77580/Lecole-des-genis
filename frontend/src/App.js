@@ -122,29 +122,128 @@ function App() {
     }
   };
 
-  const handleAuth = async (e) => {
-    e.preventDefault();
-    try {
-      const endpoint = authMode === 'login' ? 'login' : 'register';
-      const payload = authMode === 'login' 
-        ? { email: authForm.email, password: authForm.password }
-        : {
-            email: authForm.email,
-            password: authForm.password,
-            first_name: authForm.firstName,
-            last_name: authForm.lastName,
-            user_type: authForm.userType
-          };
+  // Separate auth form component to avoid re-renders
+  const AuthForm = () => {
+    const [localAuthForm, setLocalAuthForm] = useState({
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      userType: 'parent'
+    });
+    
+    const handleLocalAuth = async (e) => {
+      e.preventDefault();
+      try {
+        const endpoint = authMode === 'login' ? 'login' : 'register';
+        const payload = authMode === 'login' 
+          ? { email: localAuthForm.email, password: localAuthForm.password }
+          : {
+              email: localAuthForm.email,
+              password: localAuthForm.password,
+              first_name: localAuthForm.firstName,
+              last_name: localAuthForm.lastName,
+              user_type: localAuthForm.userType
+            };
 
-      const response = await axios.post(`${API_BASE_URL}/api/auth/${endpoint}`, payload);
-      
-      localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
-      setCurrentView('dashboard');
-      showAlert(authMode === 'login' ? 'Connexion réussie!' : 'Inscription réussie!', 'success');
-    } catch (error) {
-      showAlert(error.response?.data?.detail || 'Erreur d\'authentification', 'error');
-    }
+        const response = await axios.post(`${API_BASE_URL}/api/auth/${endpoint}`, payload);
+        
+        localStorage.setItem('token', response.data.token);
+        setUser(response.data.user);
+        setCurrentView('dashboard');
+        showAlert(authMode === 'login' ? 'Connexion réussie!' : 'Inscription réussie!', 'success');
+      } catch (error) {
+        showAlert(error.response?.data?.detail || 'Erreur d\'authentification', 'error');
+      }
+    };
+    
+    return (
+      <form onSubmit={handleLocalAuth} className="space-y-4">
+        {authMode === 'register' && (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="firstName">Prénom</Label>
+                <Input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  autoComplete="given-name"
+                  placeholder="Votre prénom"
+                  value={localAuthForm.firstName}
+                  onChange={(e) => setLocalAuthForm(prev => ({ ...prev, firstName: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="lastName">Nom</Label>
+                <Input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  autoComplete="family-name"
+                  placeholder="Votre nom"
+                  value={localAuthForm.lastName}
+                  onChange={(e) => setLocalAuthForm(prev => ({ ...prev, lastName: e.target.value }))}
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="userType">Je suis</Label>
+              <Select
+                value={localAuthForm.userType}
+                onValueChange={(value) => setLocalAuthForm(prev => ({ ...prev, userType: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="parent">Parent</SelectItem>
+                  <SelectItem value="teacher">Professeur</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+        
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="votre@email.com"
+            value={localAuthForm.email}
+            onChange={(e) => setLocalAuthForm(prev => ({ ...prev, email: e.target.value }))}
+            required
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="password">Mot de passe</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
+            placeholder="Votre mot de passe"
+            value={localAuthForm.password}
+            onChange={(e) => setLocalAuthForm(prev => ({ ...prev, password: e.target.value }))}
+            required
+          />
+        </div>
+
+        <Button 
+          type="submit" 
+          className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600"
+        >
+          {authMode === 'login' ? 'Se connecter' : 'S\'inscrire'}
+        </Button>
+      </form>
+    );
   };
 
   const handleLogout = () => {
