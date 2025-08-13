@@ -82,13 +82,18 @@ class PedagogicalSheetCreate(BaseModel):
     is_premium: bool = False
     is_teacher_only: bool = False
 
-class PedagogicalSheetUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    level: Optional[str] = None
-    subject: Optional[str] = None
-    is_premium: Optional[bool] = None
-    is_teacher_only: Optional[bool] = None
+class TeacherVerification(BaseModel):
+    id: str
+    user_id: str
+    document_url: str
+    status: str  # "pending", "approved", "rejected"
+    created_at: datetime
+
+async def get_admin_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    user = await get_current_user(credentials)
+    if not user.get("is_admin", False):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
 
 # Helper functions
 def hash_password(password: str) -> str:
