@@ -348,6 +348,7 @@ def main():
         ("Admin Password Reset Endpoint", tester.test_admin_password_reset_endpoint),
         ("Marine Password Reset to Marine77", tester.test_marine_password_reset_to_marine77),
         ("Non-Admin Access Denied", tester.test_non_admin_access_denied),
+        ("Endpoint Without Auth", tester.test_endpoint_without_auth),
     ]
     
     print(f"\n📋 Running {len(tests)} test categories...")
