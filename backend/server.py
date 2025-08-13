@@ -265,7 +265,8 @@ async def login(login_data: UserLogin):
             "last_name": user["last_name"],
             "user_type": user["user_type"],
             "is_premium": user["is_premium"],
-            "is_verified": user["is_verified"]
+            "is_verified": user["is_verified"],
+            "is_admin": user.get("is_admin", False)
         }
     }
 
