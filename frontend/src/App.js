@@ -21,7 +21,15 @@ import {
   CheckCircle,
   Clock,
   Menu,
-  X
+  X,
+  Plus,
+  Edit,
+  Trash2,
+  BarChart3,
+  Settings,
+  Crown,
+  Zap,
+  Shield
 } from 'lucide-react';
 import './App.css';
 
