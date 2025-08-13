@@ -70,6 +70,14 @@ function App() {
     } else {
       setIsLoading(false);
     }
+
+    // Check for reset token in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const resetTokenFromUrl = urlParams.get('token');
+    if (resetTokenFromUrl) {
+      setResetToken(resetTokenFromUrl);
+      setCurrentView('reset-password');
+    }
   }, []);
 
   useEffect(() => {
