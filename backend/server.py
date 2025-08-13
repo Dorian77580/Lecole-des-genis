@@ -60,6 +60,7 @@ class User(BaseModel):
     user_type: str
     is_premium: bool = False
     is_verified: bool = False
+    is_admin: bool = False
     created_at: datetime
 
 class PedagogicalSheet(BaseModel):
