@@ -300,6 +300,88 @@ function App() {
     }
   };
 
+  // Admin functions
+  const fetchAdminStats = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_BASE_URL}/api/admin/stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdminStats(response.data);
+    } catch (error) {
+      showAlert('Erreur lors du chargement des statistiques', 'error');
+    }
+  };
+
+  const fetchAdminSheets = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_BASE_URL}/api/admin/pedagogical-sheets`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdminSheets(response.data.sheets);
+    } catch (error) {
+      showAlert('Erreur lors du chargement des fiches', 'error');
+    }
+  };
+
+  const createSheet = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      
+      formData.append('title', newSheet.title);
+      formData.append('description', newSheet.description);
+      formData.append('level', newSheet.level);
+      formData.append('subject', newSheet.subject);
+      formData.append('is_premium', newSheet.is_premium);
+      formData.append('is_teacher_only', newSheet.is_teacher_only);
+      formData.append('file', newSheet.file);
+
+      await axios.post(`${API_BASE_URL}/api/admin/pedagogical-sheets`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      showAlert('Fiche créée avec succès!', 'success');
+      
+      // Reset form
+      setNewSheet({
+        title: '',
+        description: '',
+        level: 'PS',
+        subject: 'mathématiques',
+        is_premium: false,
+        is_teacher_only: false,
+        file: null
+      });
+      
+      // Refresh admin sheets
+      await fetchAdminSheets();
+    } catch (error) {
+      showAlert('Erreur lors de la création', 'error');
+    }
+  };
+
+  const deleteSheet = async (sheetId) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette fiche ?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API_BASE_URL}/api/admin/pedagogical-sheets/${sheetId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      showAlert('Fiche supprimée avec succès!', 'success');
+      await fetchAdminSheets();
+    } catch (error) {
+      showAlert('Erreur lors de la suppression', 'error');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50 flex items-center justify-center">
