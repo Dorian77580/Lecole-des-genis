@@ -800,11 +800,13 @@ function App() {
         <Card className="w-full max-w-md p-8">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-gray-900">
-              {authMode === 'login' ? 'Connexion' : 'Inscription'}
+              {authMode === 'login' ? 'Connexion' : 
+               authMode === 'register' ? 'Inscription' : 
+               'Mot de passe oublié'}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <AuthForm />
+            {authMode === 'forgot-password' ? <ForgotPasswordForm /> : <AuthForm />}
 
             <div className="mt-6 text-center space-y-3">
               {authMode === 'login' && (
@@ -817,16 +819,28 @@ function App() {
                 </Button>
               )}
               
-              <Button
-                variant="link"
-                onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
-                className="text-rose-600"
-              >
-                {authMode === 'login' 
-                  ? 'Pas encore de compte ? S\'inscrire' 
-                  : 'Déjà un compte ? Se connecter'
-                }
-              </Button>
+              {authMode !== 'forgot-password' && (
+                <Button
+                  variant="link"
+                  onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+                  className="text-rose-600"
+                >
+                  {authMode === 'login' 
+                    ? 'Pas encore de compte ? S\'inscrire' 
+                    : 'Déjà un compte ? Se connecter'
+                  }
+                </Button>
+              )}
+              
+              {authMode === 'forgot-password' && (
+                <Button
+                  variant="link"
+                  onClick={() => setAuthMode('login')}
+                  className="text-rose-600"
+                >
+                  Retour à la connexion
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
