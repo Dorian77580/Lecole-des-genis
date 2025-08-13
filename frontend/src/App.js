@@ -342,7 +342,7 @@ function App() {
   };
 
   // Admin functions
-  const fetchAdminStats = async () => {
+  const fetchAdminStats = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(`${API_BASE_URL}/api/admin/stats`, {
@@ -352,9 +352,9 @@ function App() {
     } catch (error) {
       showAlert('Erreur lors du chargement des statistiques', 'error');
     }
-  };
+  }, []);
 
-  const fetchAdminSheets = async () => {
+  const fetchAdminSheets = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(`${API_BASE_URL}/api/admin/pedagogical-sheets`, {
@@ -364,7 +364,7 @@ function App() {
     } catch (error) {
       showAlert('Erreur lors du chargement des fiches', 'error');
     }
-  };
+  }, []);
 
   const createSheet = async (e) => {
     e.preventDefault();
