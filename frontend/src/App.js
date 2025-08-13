@@ -598,7 +598,7 @@ function App() {
                   autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
                   placeholder="Votre mot de passe"
                   value={authForm.password}
-                  onChange={(e) => handleAuthFormChange('password', e.target.value)}
+                  onChange={handlePasswordChange}
                   required
                 />
               </div>
