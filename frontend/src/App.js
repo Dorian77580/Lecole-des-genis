@@ -207,43 +207,73 @@ function App() {
           </>
         )}
         
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="votre@email.com"
-            value={localAuthForm.email}
-            onChange={(e) => setLocalAuthForm(prev => ({ ...prev, email: e.target.value }))}
-            required
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="password">Mot de passe</Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
-            placeholder="Votre mot de passe"
-            value={localAuthForm.password}
-            onChange={(e) => setLocalAuthForm(prev => ({ ...prev, password: e.target.value }))}
-            required
-          />
-        </div>
+        {authMode !== 'forgot-password' && (
+          <>
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="votre@email.com"
+                value={localAuthForm.email}
+                onChange={(e) => setLocalAuthForm(prev => ({ ...prev, email: e.target.value }))}
+                required
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="password">Mot de passe</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
+                placeholder="Votre mot de passe"
+                value={localAuthForm.password}
+                onChange={(e) => setLocalAuthForm(prev => ({ ...prev, password: e.target.value }))}
+                required
+              />
+            </div>
+          </>
+        )}
 
         <Button 
           type="submit" 
           className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600"
         >
-          {authMode === 'login' ? 'Se connecter' : 'S\'inscrire'}
+          {authMode === 'login' ? 'Se connecter' : authMode === 'register' ? 'S\'inscrire' : 'Réinitialiser'}
         </Button>
       </form>
     );
   };
+
+  // Forgot Password Form Component
+  const ForgotPasswordForm = () => (
+    <form onSubmit={handleForgotPassword} className="space-y-4">
+      <div>
+        <Label htmlFor="reset-email">Email</Label>
+        <Input
+          id="reset-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="votre@email.com"
+          value={resetEmail}
+          onChange={(e) => setResetEmail(e.target.value)}
+          required
+        />
+      </div>
+
+      <Button 
+        type="submit" 
+        className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600"
+      >
+        Envoyer le lien de réinitialisation
+      </Button>
+    </form>
+  );
 
   const handleLogout = () => {
     localStorage.removeItem('token');
