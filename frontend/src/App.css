@@ -1,34 +1,224 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  color: #374151;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.App {
+  min-height: 100vh;
 }
 
-.App-link {
-    color: #61dafb;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #f43f5e, #fb7185);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #e11d48, #f43f5e);
+}
+
+/* Smooth transitions for interactive elements */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Card hover effects */
+.hover\:shadow-lg:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Input focus styles */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #f43f5e;
+  ring-opacity: 0.5;
+  border-color: #f43f5e;
+}
+
+/* Loading animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, #f43f5e, #fb923c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card animations */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Hero section background animation */
+.hero-bg {
+  background: linear-gradient(-45deg, #fef2f2, #fff7ed, #fdf2f8, #fef3f2);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Badge styles */
+.badge-premium {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+  font-weight: 600;
+}
+
+.badge-teacher {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  font-weight: 600;
+}
+
+/* Mobile menu animation */
+.mobile-menu {
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+}
+
+/* File upload styles */
+input[type="file"] {
+  border: 2px dashed #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="file"]:hover {
+  border-color: #f43f5e;
+  background-color: #fef2f2;
+}
+
+/* Alert animations */
+.alert-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.alert-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.3s ease-in-out;
+}
+
+.alert-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.alert-exit-active {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Responsive design helpers */
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.125rem;
+  }
+}
+
+/* Dark mode support (for future implementation) */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles can be added here */
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .hero-bg {
+    animation: none;
+  }
 }
