@@ -33,7 +33,7 @@ function App() {
   const [sheets, setSheets] = useState([]);
   const [currentView, setCurrentView] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [filters, setFilters] = useState({ level: '', subject: '' });
+  const [filters, setFilters] = useState({ level: 'all', subject: 'all' });
   const [authForm, setAuthForm] = useState({
     email: '',
     password: '',
