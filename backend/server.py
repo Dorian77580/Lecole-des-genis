@@ -297,7 +297,7 @@ async def get_pedagogical_sheets(
         query["is_premium"] = False
         query["is_teacher_only"] = False
     
-    sheets = await db.pedagogical_sheets.find(query).to_list(length=100)
+    sheets = await db.pedagogical_sheets.find(query, {"_id": 0}).to_list(length=100)
     
     return {
         "sheets": sheets,
