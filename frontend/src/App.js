@@ -1589,7 +1589,7 @@ function App() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {subjects.map(subject => (
+                              {SUBJECTS.map(subject => (
                                 <SelectItem key={subject} value={subject}>
                                   {subject.charAt(0).toUpperCase() + subject.slice(1)}
                                 </SelectItem>
