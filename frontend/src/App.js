@@ -422,7 +422,7 @@ function App() {
     } catch (error) {
       showAlert('Erreur lors de la suppression', 'error');
     }
-  }, [fetchAdminSheets]);
+  }, [fetchAdminSheets, showAlert]);
 
   // Admin password reset function
   const resetUserPassword = useCallback(async (email, newPassword) => {
