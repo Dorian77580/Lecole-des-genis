@@ -64,9 +64,6 @@ function App() {
   const [resetToken, setResetToken] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  const levels = ['PS', 'MS', 'GS', 'CP', 'CE1', 'CE2', 'CM1', 'CM2', '6e', '5e', '4e', '3e'];
-  const subjects = ['mathématiques', 'français', 'sciences', 'découverte du monde', 'histoire', 'géographie'];
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
