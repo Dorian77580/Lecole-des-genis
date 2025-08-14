@@ -445,7 +445,7 @@ function App() {
       showAlert('Erreur lors de la réinitialisation', 'error');
       throw error;
     }
-  }, []);
+  }, [showAlert]);
 
   // Password reset functions
   const handleForgotPassword = async (e) => {
