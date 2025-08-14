@@ -447,6 +447,572 @@ function App() {
     }
   }, [showAlert]);
 
+// Separate Admin component to isolate state and prevent re-renders
+const AdminComponent = ({ user, onNavigateBack }) => {
+  const [activeTab, setActiveTab] = useState('create');
+  const [adminStats, setAdminStats] = useState(null);
+  const [adminSheets, setAdminSheets] = useState([]);
+  const [newSheet, setNewSheet] = useState({
+    title: '',
+    description: '',
+    level: 'PS',
+    subject: 'mathématiques',
+    is_premium: false,
+    is_teacher_only: false,
+    file: null
+  });
+  const [alert, setAlert] = useState({ show: false, message: '', type: 'info' });
+
+  const showAlert = useCallback((message, type = 'info') => {
+    setAlert({ show: true, message, type });
+    setTimeout(() => setAlert({ show: false, message: '', type: 'info' }), 5000);
+  }, []);
+
+  const fetchAdminStats = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_BASE_URL}/api/admin/stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdminStats(response.data);
+    } catch (error) {
+      showAlert('Erreur lors du chargement des statistiques', 'error');
+    }
+  }, [showAlert]);
+
+  const fetchAdminSheets = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_BASE_URL}/api/admin/pedagogical-sheets`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAdminSheets(response.data.sheets);
+    } catch (error) {
+      showAlert('Erreur lors du chargement des fiches', 'error');
+    }
+  }, [showAlert]);
+
+  const createSheet = useCallback(async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      
+      formData.append('title', newSheet.title);
+      formData.append('description', newSheet.description);
+      formData.append('level', newSheet.level);
+      formData.append('subject', newSheet.subject);
+      formData.append('is_premium', newSheet.is_premium);
+      formData.append('is_teacher_only', newSheet.is_teacher_only);
+      formData.append('file', newSheet.file);
+
+      await axios.post(`${API_BASE_URL}/api/admin/pedagogical-sheets`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      showAlert('Fiche créée avec succès!', 'success');
+      
+      setNewSheet({
+        title: '',
+        description: '',
+        level: 'PS',
+        subject: 'mathématiques',
+        is_premium: false,
+        is_teacher_only: false,
+        file: null
+      });
+      
+      await fetchAdminSheets();
+    } catch (error) {
+      showAlert('Erreur lors de la création', 'error');
+    }
+  }, [newSheet, fetchAdminSheets, showAlert]);
+
+  const deleteSheet = useCallback(async (sheetId) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette fiche ?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API_BASE_URL}/api/admin/pedagogical-sheets/${sheetId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      showAlert('Fiche supprimée avec succès!', 'success');
+      await fetchAdminSheets();
+    } catch (error) {
+      showAlert('Erreur lors de la suppression', 'error');
+    }
+  }, [fetchAdminSheets, showAlert]);
+
+  const resetUserPassword = useCallback(async (email, newPassword) => {
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('new_password', newPassword);
+
+      await axios.post(`${API_BASE_URL}/api/admin/reset-user-password`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      showAlert(`Mot de passe réinitialisé pour ${email}`, 'success');
+    } catch (error) {
+      showAlert('Erreur lors de la réinitialisation', 'error');
+    }
+  }, [showAlert]);
+
+  const downloadFile = useCallback(async (fileUrl) => {
+    try {
+      const token = localStorage.getItem('token');
+      const filename = fileUrl.split('/').pop();
+      
+      const response = await axios.get(`${API_BASE_URL}${fileUrl}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      showAlert('Erreur lors du téléchargement', 'error');
+    }
+  }, [showAlert]);
+
+  useEffect(() => {
+    if (user && user.is_admin) {
+      fetchAdminStats();
+      fetchAdminSheets();
+    }
+  }, [user, fetchAdminStats, fetchAdminSheets]);
+
+  if (!user || !user.is_admin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
+        <div className="flex items-center justify-center min-h-screen">
+          <Card className="p-12 text-center">
+            <Shield className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Accès Admin Requis</h2>
+            <p className="text-gray-600 mb-4">Vous devez être administrateur pour accéder à cette page.</p>
+            <Button onClick={() => onNavigateBack('home')}>
+              Retour à l'accueil
+            </Button>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-orange-50">
+      {/* Simple Header */}
+      <header className="bg-white shadow-sm border-b border-rose-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="bg-gradient-to-r from-rose-500 to-orange-500 p-2 rounded-xl">
+                <BookOpen className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">L'École des Génies - Admin</h1>
+                <p className="text-sm text-gray-600">Bonjour Marine</p>
+              </div>
+            </div>
+            
+            <Button onClick={() => onNavigateBack('dashboard')}>
+              Retour au site
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {alert.show && (
+          <Alert className={`mb-4 ${
+            alert.type === 'error' ? 'border-red-500 bg-red-50' : 
+            alert.type === 'success' ? 'border-green-500 bg-green-50' : 
+            'border-blue-500 bg-blue-50'
+          }`}>
+            <AlertDescription className={
+              alert.type === 'error' ? 'text-red-700' : 
+              alert.type === 'success' ? 'text-green-700' : 
+              'text-blue-700'
+            }>
+              {alert.message}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Espace Administrateur
+          </h2>
+          <p className="text-gray-600">
+            Gérez le contenu et consultez les statistiques de la plateforme
+          </p>
+        </div>
+
+        {/* Stats Dashboard */}
+        {adminStats && (
+          <div className="grid md:grid-cols-4 gap-6 mb-8">
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Utilisateurs totaux</p>
+                  <p className="text-2xl font-bold text-gray-900">{adminStats.users.total}</p>
+                </div>
+                <Users className="h-8 w-8 text-blue-500" />
+              </div>
+            </Card>
+            
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Membres Premium</p>
+                  <p className="text-2xl font-bold text-yellow-600">{adminStats.users.premium}</p>
+                </div>
+                <Crown className="h-8 w-8 text-yellow-500" />
+              </div>
+            </Card>
+            
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Fiches totales</p>
+                  <p className="text-2xl font-bold text-green-600">{adminStats.sheets.total}</p>
+                </div>
+                <BookOpen className="h-8 w-8 text-green-500" />
+              </div>
+            </Card>
+            
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Professeurs vérifiés</p>
+                  <p className="text-2xl font-bold text-purple-600">{adminStats.users.verified_teachers}</p>
+                </div>
+                <GraduationCap className="h-8 w-8 text-purple-500" />
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* Simple Tabs */}
+        <div className="space-y-6">
+          <div className="bg-white border-b border-gray-200 rounded-lg">
+            <nav className="flex space-x-8 px-6">
+              <button
+                onClick={() => setActiveTab('create')}
+                className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'create'
+                    ? 'border-rose-500 text-rose-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Créer une fiche
+              </button>
+              <button
+                onClick={() => setActiveTab('manage')}
+                className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'manage'
+                    ? 'border-rose-500 text-rose-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Gérer les fiches
+              </button>
+              <button
+                onClick={() => setActiveTab('users')}
+                className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'users'
+                    ? 'border-rose-500 text-rose-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Gestion utilisateurs
+              </button>
+            </nav>
+          </div>
+
+          {/* Tab Content with keys for stability */}
+          <div key={`tab-${activeTab}`} className="space-y-6">
+            {activeTab === 'create' && (
+              <Card className="p-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-gray-900">
+                    Créer une nouvelle fiche pédagogique
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={createSheet} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <Label htmlFor="title">Titre</Label>
+                        <Input
+                          id="title"
+                          value={newSheet.title}
+                          onChange={(e) => setNewSheet(prev => ({ ...prev, title: e.target.value }))}
+                          placeholder="Ex: Les fractions - CM2"
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="level">Niveau</Label>
+                        <Select
+                          value={newSheet.level}
+                          onValueChange={(value) => setNewSheet(prev => ({ ...prev, level: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {LEVELS.map(level => (
+                              <SelectItem key={level} value={level}>{level}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="description">Description</Label>
+                      <textarea
+                        id="description"
+                        value={newSheet.description}
+                        onChange={(e) => setNewSheet(prev => ({ ...prev, description: e.target.value }))}
+                        className="w-full p-3 border border-gray-300 rounded-md resize-none"
+                        rows="3"
+                        placeholder="Décrivez le contenu de la fiche..."
+                        required
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                      <div>
+                        <Label htmlFor="subject">Matière</Label>
+                        <Select
+                          value={newSheet.subject}
+                          onValueChange={(value) => setNewSheet(prev => ({ ...prev, subject: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {SUBJECTS.map(subject => (
+                              <SelectItem key={subject} value={subject}>
+                                {subject.charAt(0).toUpperCase() + subject.slice(1)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="is_premium"
+                            checked={newSheet.is_premium}
+                            onChange={(e) => setNewSheet(prev => ({ ...prev, is_premium: e.target.checked }))}
+                          />
+                          <Label htmlFor="is_premium">Premium</Label>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="is_teacher_only"
+                            checked={newSheet.is_teacher_only}
+                            onChange={(e) => setNewSheet(prev => ({ ...prev, is_teacher_only: e.target.checked }))}
+                          />
+                          <Label htmlFor="is_teacher_only">Professeurs uniquement</Label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="file">Fichier PDF</Label>
+                      <Input
+                        id="file"
+                        type="file"
+                        accept=".pdf"
+                        onChange={(e) => setNewSheet(prev => ({ ...prev, file: e.target.files[0] }))}
+                        required
+                      />
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      className="bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600"
+                      disabled={!newSheet.file}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Créer la fiche
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === 'manage' && (
+              <Card className="p-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-gray-900">
+                    Gérer les fiches pédagogiques
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {adminSheets.map(sheet => (
+                      <div key={sheet.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-semibold text-gray-900">{sheet.title}</h3>
+                            <Badge variant="outline">{sheet.level}</Badge>
+                            {sheet.is_premium && (
+                              <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+                                Premium
+                              </Badge>
+                            )}
+                            {sheet.is_teacher_only && (
+                              <Badge variant="secondary">Professeurs</Badge>
+                            )}
+                          </div>
+                          <p className="text-gray-600 text-sm">{sheet.description}</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {sheet.subject} • Créé le {new Date(sheet.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => downloadFile(sheet.file_url)}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => deleteSheet(sheet.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {adminSheets.length === 0 && (
+                      <div className="text-center py-12">
+                        <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Aucune fiche créée
+                        </h3>
+                        <p className="text-gray-600">
+                          Commencez par créer votre première fiche pédagogique
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === 'users' && (
+              <Card className="p-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-gray-900">
+                    Réinitialisation de mot de passe
+                  </CardTitle>
+                  <p className="text-gray-600">
+                    Réinitialisez le mot de passe d'un utilisateur
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-yellow-800 mb-2">Réinitialisation rapide</h4>
+                      <div className="space-y-4">
+                        <Button
+                          onClick={() => resetUserPassword('Marine.alves1995@gmail.com', 'Marine77')}
+                          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                        >
+                          Réinitialiser mon mot de passe → Marine77
+                        </Button>
+                        <p className="text-sm text-yellow-700">
+                          Ceci réinitialisera le mot de passe de Marine.alves1995@gmail.com à "Marine77"
+                        </p>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-4">Réinitialisation personnalisée</h4>
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        const formData = new FormData(e.target);
+                        const email = formData.get('email');
+                        const password = formData.get('password');
+                        resetUserPassword(email, password);
+                        e.target.reset();
+                      }} className="space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="reset-email">Email utilisateur</Label>
+                            <Input
+                              id="reset-email"
+                              name="email"
+                              type="email"
+                              placeholder="utilisateur@example.com"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="reset-password">Nouveau mot de passe</Label>
+                            <Input
+                              id="reset-password"
+                              name="password"
+                              type="text"
+                              placeholder="NouveauMotDePasse123"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <Button 
+                          type="submit"
+                          variant="outline"
+                          className="border-rose-300 text-rose-600 hover:bg-rose-50"
+                        >
+                          <Settings className="mr-2 h-4 w-4" />
+                          Réinitialiser le mot de passe
+                        </Button>
+                      </form>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
   // Password reset functions
   const handleForgotPassword = async (e) => {
     e.preventDefault();
