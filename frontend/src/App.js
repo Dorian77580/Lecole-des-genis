@@ -87,10 +87,10 @@ function App() {
     }
   }, [user, filters]);
 
-  const showAlert = (message, type = 'info') => {
+  const showAlert = useCallback((message, type = 'info') => {
     setAlert({ show: true, message, type });
     setTimeout(() => setAlert({ show: false, message: '', type: 'info' }), 5000);
-  };
+  }, []);
 
   const fetchUserProfile = async (token) => {
     try {
