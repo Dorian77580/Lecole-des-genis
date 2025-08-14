@@ -974,7 +974,7 @@ function App() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Tous les niveaux</SelectItem>
-                    {levels.map(level => (
+                    {LEVELS.map(level => (
                       <SelectItem key={level} value={level}>{level}</SelectItem>
                     ))}
                   </SelectContent>
