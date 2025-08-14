@@ -406,7 +406,7 @@ function App() {
     } catch (error) {
       showAlert('Erreur lors de la création', 'error');
     }
-  }, [newSheet, fetchAdminSheets]);
+  }, [newSheet, fetchAdminSheets, showAlert]);
 
   const deleteSheet = useCallback(async (sheetId) => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette fiche ?')) return;
