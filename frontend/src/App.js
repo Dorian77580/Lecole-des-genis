@@ -1663,6 +1663,8 @@ function App() {
   ));
 
   const AdminPage = () => {
+    const [activeTab, setActiveTab] = useState('create');
+    
     useEffect(() => {
       if (user && user.is_admin) {
         fetchAdminStats();
