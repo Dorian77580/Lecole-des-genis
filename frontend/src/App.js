@@ -1401,7 +1401,8 @@ function App() {
   );
 
   // Password reset functions
-  const handleForgotPassword = async (e) => {
+
+  const AdminPage = () => {
     const [activeTab, setActiveTab] = useState('create');
     
     useEffect(() => {
