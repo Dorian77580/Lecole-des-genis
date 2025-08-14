@@ -1400,7 +1400,7 @@ function App() {
     </div>
   );
 
-  // Separate tab components to prevent re-renders
+  // Password reset functions
   const CreateSheetTab = React.memo(() => (
     <Card className="p-8">
       <CardHeader>
