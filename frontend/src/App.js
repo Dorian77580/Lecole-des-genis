@@ -353,7 +353,7 @@ function App() {
     } catch (error) {
       showAlert('Erreur lors du chargement des statistiques', 'error');
     }
-  }, []);
+  }, [showAlert]);
 
   const fetchAdminSheets = useCallback(async () => {
     try {
@@ -365,7 +365,7 @@ function App() {
     } catch (error) {
       showAlert('Erreur lors du chargement des fiches', 'error');
     }
-  }, []);
+  }, [showAlert]);
 
   const createSheet = useCallback(async (e) => {
     e.preventDefault();
